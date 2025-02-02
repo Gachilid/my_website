@@ -1,0 +1,241 @@
+﻿/* ========== 🌟 页面基础样式 ========== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 80px; /* ✅ 让正文内容下移，避免被导航栏挡住 */
+    text-align: center;
+    background-color: #f4f4f4;
+    overflow: hidden; /* ✅ 防止页面滚动，直到进入动画完成 */
+}
+
+    /* 🌟 默认隐藏所有内容，等待进入动画结束 */
+    body.hide-content > *:not(#intro-screen) {
+        display: none;
+    }
+
+/* ========== 🟢 进入页面的动画界面 ========== */
+#intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    z-index: 9999; /* 确保 intro-screen 在最上层 */
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+    overflow: hidden; /* ✅ 让代码流不超出 */
+}
+
+    #particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* 确保在文字和代码后面，但在视频前面 */
+    pointer-events: none; /* 让鼠标穿透，不影响按钮点击 */
+}
+
+    #background-video {
+    position: absolute; /* 让视频相对 #intro-screen 绝对定位 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3; /* 低于遮罩层 */
+}
+
+/* ✅ 添加黑色半透明遮罩 */
+    #overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* 50% 透明黑色 */
+    z-index: -2; /* 低于前景内容，但高于视频 */
+    /* ✅ 让代码流背景进行几何扭曲 */
+}
+
+#code-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    color: #00ff00;
+    padding: 20px;
+    overflow: hidden; /* ✅ 确保代码不会超出容器 */
+    white-space: pre-wrap;
+    text-align: left;
+    opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transform: translateY(0px); /* ✅ 让代码可以进行平滑滚动 */
+}
+
+/* 🌟 让不同的代码行有不同颜色（可选） */
+#code-animation div:nth-child(odd) {
+    color: #00ff06b8; /* ✅ 绿色（奇数行） */
+}
+#code-animation div:nth-child(even) {
+    color: #00ff06b8; /* ✅ 绿色（偶数行） */
+}
+
+/* 💡 让光标更明显 */
+#code-animation::after {
+    content: '|'; /* ✅ 模拟终端光标 */
+    animation: blink 1s infinite;
+}
+
+/* 🟢 让光标闪烁 */
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* 🔹 确保标题和按钮保持居中 */
+#intro-title, #enter-btn {
+    position: relative;
+    z-index: 10; /* ✅ 确保它们在代码背景的前面 */
+}
+
+/* 🔹 进入按钮美化 */
+#enter-btn {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 20px;
+    background: white;
+    color: #2a5298;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+    #enter-btn:hover {
+        transform: scale(1.1);
+        background: #f8f8f8;
+    }
+
+/* 🔹 当 intro-screen 消失时 */
+#intro-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 标题动画 */
+#intro-title {
+    font-size: 40px;
+    font-weight: bold;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 鼠标移动时，标题轻微浮动 */
+#intro-screen:hover #intro-title {
+    transform: translateY(-5px);
+}
+
+/* 进入按钮 */
+#enter-btn {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 20px;
+    background: white;
+    color: #2a5298;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+    #enter-btn:hover {
+        transform: scale(1.1);
+        background: #f8f8f8;
+    }
+
+/* 当 intro-screen 消失时 */
+#intro-screen.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ========== 🔵 导航栏动画 ========== */
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: -100px; /* ✅ 初始隐藏 */
+    width: 100%;
+    z-index: 1000;
+    transition: top 0.8s ease-in-out;
+}
+
+/* ✅ 当进入动画完成后，导航栏才可见 */
+body.show-header header {
+    top: 0 ;
+}
+
+/* 导航栏内的菜单 */
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+    nav ul li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+/* ========== 🔶 页面板块样式 ========== */
+section {
+    padding: 50px;
+    background-color: white;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+/* ========== 🔷 作品展示 ========== */
+.project {
+    background: #eee;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+/* ========== 🟣 表单样式 ========== */
+form input, form textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+form button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+    form button:hover {
+        background-color: #555;
+    }

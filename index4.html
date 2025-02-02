@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeremy's Website</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- ✅ 引入 Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+</head>
+<body>
+    <!-- 进入页面的动画界面 -->
+
+    <div id="intro-screen">
+        <video autoplay loop muted playsinline id="background-video">
+            <source src="assets/videos/video01.mp4" type="video/mp4">
+        </video>
+
+        <!-- 粒子特效层 -->
+        <canvas id="particle-canvas"></canvas>
+
+        <div id="code-animation"></div>
+
+        <!-- 半透明黑色遮罩 -->
+        <div id="overlay"></div>
+
+        <!-- 代码动画容器 -->
+        <div id="code-animation"></div>
+
+        <!-- 前景内容：欢迎标题和进入按钮 -->
+        <h1 id="intro-title">欢迎来到 Jeremy 的网站</h1>
+        <button id="enter-btn">进入网站</button>
+    </div>
+
+    <!-- 主内容 -->
+    <header>
+        <h1>欢迎来到我的网站</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#projects">作品展示</a></li>
+                <li><a href="#contact">联系我</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="about">
+        <h2>关于我</h2>
+        <p>你好！我是 Jeremy，这里是我的个人网站。</p>
+    </section>
+
+    <section id="projects">
+        <h2>我的作品</h2>
+        <div class="project">
+            <h3>项目 1</h3>
+            <p>这是我的第一个作品。</p>
+        </div>
+        <div class="project">
+            <h3>项目 2</h3>
+            <p>这是我的第二个作品。</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>联系我</h2>
+        <form>
+            <input type="text" placeholder="你的姓名">
+            <input type="email" placeholder="你的邮箱">
+            <textarea placeholder="你的留言"></textarea>
+            <button type="submit">发送</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2025 Jeremy. 保留所有权利。</p>
+    </footer>
+
+    <!-- JS 放在 body 结束前 -->
+    <script src="script.js"></script>
+</body>
+</html>
