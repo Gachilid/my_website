@@ -1,17 +1,22 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
+﻿/********************************************************************/
+/* 通过 ES Modules 方式加载 Three.js/OrbitControls/OBJLoader         */
+/********************************************************************/
+import * as THREE from 'https://unpkg.com/three@0.152.2/build/three.module.js';
+import { OrbitControls } from 'https://unpkg.com/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+import { OBJLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/OBJLoader.js';
+
+document.addEventListener("DOMContentLoaded", function () {
     /**************************************************************************/
-    /* 视频延迟播放处理 & IntersectionObserver */
+    /* 视频懒加载 + IntersectionObserver */
     /**************************************************************************/
     let video = document.getElementById("background-video");
     let source = video.querySelector("source");
 
-    // ✅ 监听视频是否可以流畅播放
     video.addEventListener("canplaythrough", function () {
         console.log("🎥 视频可播放，开始播放！");
-        setTimeout(() => video.play(), 200); // ✅ 延迟播放，确保 `source` 加载完成
+        setTimeout(() => video.play(), 200);
     });
 
-    // ✅ 避免 `play()` 被 `load()` 终止
     video.play().catch(error => {
         console.warn("⚠️ 自动播放失败，尝试静音播放", error);
         video.muted = true;
@@ -22,11 +27,11 @@
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 console.log("📺 开始加载视频...");
-                if (!source.src) { // 确保只加载一次
-                    source.src = "./assets/videos/video01.mp4"; // ✅ 相对路径
+                if (!source.src) {
+                    source.src = "./assets/videos/video01.mp4";
                     video.load();
                 }
-                observer.unobserve(video); // 只触发一次
+                observer.unobserve(video);
             }
         });
     });
@@ -54,21 +59,18 @@
         mouse.x = event.x;
         mouse.y = event.y;
     });
-
     window.addEventListener("touchmove", (event) => {
         if (event.touches.length > 0) {
             mouse.x = event.touches[0].clientX;
             mouse.y = event.touches[0].clientY;
         }
     });
-
     window.addEventListener("touchstart", (event) => {
         if (event.touches.length > 0) {
             mouse.x = event.touches[0].clientX;
             mouse.y = event.touches[0].clientY;
         }
     });
-
     window.addEventListener("touchend", () => {
         mouse.x = null;
         mouse.y = null;
@@ -81,29 +83,24 @@
             this.size = Math.random() * 2 + 1;
             this.speedX = (Math.random() - 0.5);
             this.speedY = (Math.random() - 0.5);
-            this.hue = 0; // 初始白色
+            this.hue = 0;
         }
-
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            // 颜色渐变
             this.hue += 0.2;
             if (this.hue > 180) this.hue = 120;
-
-            // 边界检测
             if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
             if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
         }
-
         draw() {
             let color;
             if (this.hue < 60) {
                 color = `rgba(255, 255, 255, 1)`;
             } else if (this.hue < 150) {
-                color = `hsl(${this.hue}, 100%, 50%)`; // 蓝绿色
+                color = `hsl(${this.hue}, 100%, 50%)`;
             } else {
-                color = `hsl(120, 75%, 50%)`; // 酸橙绿
+                color = `hsl(120, 75%, 50%)`;
             }
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -272,10 +269,8 @@
         introScreen.classList.add("fade-out");
         setTimeout(() => {
             introScreen.style.display = "none";
-            // 显示正文
             document.body.classList.remove("hide-content");
             document.body.style.overflow = "auto";
-            // 显示导航栏
             document.body.classList.add("show-header");
         }, 1000);
     });
@@ -304,7 +299,6 @@
             confirmationMessage.style.color = "green";
             confirmationMessage.style.fontWeight = "bold";
             form.appendChild(confirmationMessage);
-
             setTimeout(() => {
                 confirmationMessage.remove();
             }, 5000);
@@ -312,15 +306,12 @@
     }
 
     /**************************************************************************/
-    /* 3D 模型展示 (Three.js) —— 不使用 import，直接用全局变量 */
+    /* 3D 模型展示 (Three.js + OrbitControls + OBJLoader) */
     /**************************************************************************/
-    // 获取 3D 容器
     const canvasContainer = document.getElementById("3d-model-viewer");
 
-    // 创建场景
     const scene = new THREE.Scene();
 
-    // 创建相机
     const camera = new THREE.PerspectiveCamera(
         75,
         canvasContainer.clientWidth / canvasContainer.clientHeight,
@@ -329,25 +320,24 @@
     );
     camera.position.set(0, 2, 5);
 
-    // 创建渲染器
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     canvasContainer.appendChild(renderer.domElement);
 
-    // ⚠️ 在 animate() 之前声明 controls
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // 轨道控制器
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    // 添加一些灯光之类
+    // 灯光
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 5);
     scene.add(directionalLight);
 
-    // 加载模型
-    const objLoader = new THREE.OBJLoader();
+    // 加载 Rhino 导出的 OBJ
+    const objLoader = new OBJLoader();
     objLoader.load(
         'assets/models/my_model.obj',
         (object) => {
@@ -364,33 +354,26 @@
         }
     );
 
-    // 监听窗口变化
     window.addEventListener('resize', () => {
         camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     });
 
-    // -----------------------------------------------------
-    // 再定义 animate()，里面再用 controls.update()
-    // -----------------------------------------------------
     function animate() {
         requestAnimationFrame(animate);
-        controls.update();        // ✅ 现在 controls 已经在上面声明了
+        controls.update();
         renderer.render(scene, camera);
     }
-
-    // 最后再启动循环
     animate();
 
     /**************************************************************************/
-    /* PDF 翻页显示 (turn.js) */
+    /* PDF 翻页 (turn.js) */
     /**************************************************************************/
     let pdfBook = document.getElementById("pdf-book");
     let totalPages = 24; // 总页数
-    let basePath = "assets/portfolio/pdf-page";
+    let basePath = "assets/portfolio/pdf-page"; // 例如 pdf-page1.jpg, pdf-page2.jpg ...
 
-    // ✅ 自动生成 PDF 页
     for (let i = 1; i <= totalPages; i++) {
         let pageDiv = document.createElement("div");
         pageDiv.classList.add("page");
@@ -442,6 +425,7 @@
     function resizeBook() {
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
+
         let bookWidth = windowWidth * 0.8;
         let bookHeight = windowHeight * 1;
         let aspectRatio = 1000 / 800;
@@ -451,10 +435,8 @@
         } else {
             bookHeight = bookWidth / aspectRatio;
         }
-
         $("#pdf-book").turn("size", bookWidth, bookHeight);
     }
-
     window.addEventListener("resize", resizeBook);
     resizeBook();
-});
+}); // DOMContentLoaded 结束
