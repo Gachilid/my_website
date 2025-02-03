@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 初始加载模型
-    const modelUrl = 'https://cdn.jsdelivr.net/gh/Gachilid/my_website@main/assets/models/my_model1.obj';
+    const modelUrl = 'https://gachilid.github.io/my_website/docs/assets/models/my_model1.obj';
     loadModel(modelUrl);
 
     // 事件绑定
