@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <title>Intro - Jeremy's Website</title>
+    <!-- Intro 专用样式 -->
+    <link rel="stylesheet" href="css/style-intro.css">
+</head>
+<body>
+    <!-- ========== Intro Screen ========== -->
+    <div id="intro-screen">
+        <video autoplay loop muted playsinline id="background-video">
+            <source src="assets/videos/video01.mp4" type="video/mp4">
+        </video>
+        <canvas id="particle-canvas"></canvas>
+        <div id="overlay"></div>
+        <div id="code-animation"></div>
+
+        <h1 id="intro-title">欢迎来到 Jeremy 的网站</h1>
+        <button id="enter-btn">进入网站</button>
+    </div>
+
+    <!-- Intro 专用脚本 -->
+    <script src="js/intro.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 模型展示</title>
+    <link rel="stylesheet" href="./css/style-model.css">
+</head>
+<body>
+    <!-- 返回首页按钮 -->
+    <button id="home-btn">返回首页</button>
+
+    <!-- 3D 模型展示容器 -->
+    <div id="3d-model-container">
+        <!-- WebGL 渲染画布 -->
+    </div>
+
+    <!-- 控制按钮区域 -->
+    <div id="controls">
+        <button id="fullscreen-btn">全屏显示</button>
+        <button id="switch-model-btn">切换模型</button>
+        <label for="fov-range">调整透视角:</label>
+        <input type="range" id="fov-range" min="30" max="120" value="75">
+        <label for="far-range">调整剪裁远平面:</label>
+        <input type="range" id="far-range" min="2500" max="9000" value="5000">
+        <label for="distance-range">调整相机距离:</label>
+        <input type="range" id="distance-range" min="1" max="5000" value="2500">
+    </div>
+
+
+    <script type="module" src="./js/model3d.js"></script>
+</body>
+</html>

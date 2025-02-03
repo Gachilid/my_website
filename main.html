@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeremy's Main Page</title>
+    <link rel="stylesheet" href="css/style-main.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <h1>Jeremy's Website</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#projects">作品展示</a></li>
+                <li><a href="#contact">联系我</a></li>
+                <!-- 新增按钮跳转到 作品集页面 & 3D模型页面 -->
+                <li><a href="portfolio.html">作品集</a></li>
+                <li><a href="model3d.html">3D 模型</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 内容 -->
+    <section id="about">
+        <h2>关于我</h2>
+        <p>你好！我是 Jeremy，这里是我的个人网站。</p>
+    </section>
+
+    <section id="projects">
+        <h2>作品展示</h2>
+        <!-- 图片 & 视频 -->
+        <div id="gallery">
+            <img src="assets/image/image01.png" alt="作品图片1">
+            <video src="assets/videos/video01.mp4" controls></video>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>联系我</h2>
+        <form>
+            <input type="text" placeholder="你的姓名">
+            <input type="email" placeholder="你的邮箱">
+            <textarea placeholder="你的留言"></textarea>
+            <button type="submit">发送</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2025 Jeremy. 保留所有权利。</p>
+    </footer>
+
+    <!-- main页脚本 -->
+    <script src="js/main.js"></script>
+</body>
+</html>
