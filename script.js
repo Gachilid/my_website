@@ -1,4 +1,7 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    /**************************************************************************/
+    /* 视频延迟播放处理 & IntersectionObserver */
+    /**************************************************************************/
     let video = document.getElementById("background-video");
     let source = video.querySelector("source");
 
@@ -15,30 +18,26 @@
         setTimeout(() => video.play(), 200);
     });
 
-    // ✅ 仅替换 `src`，不 `load()`
     let observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 console.log("📺 开始加载视频...");
                 if (!source.src) { // 确保只加载一次
-                    source.src = "./assets/videos/video01.mp4"; // ✅ 改成相对路径
+                    source.src = "./assets/videos/video01.mp4"; // ✅ 相对路径
                     video.load();
                 }
                 observer.unobserve(video); // 只触发一次
             }
         });
     });
-
     observer.observe(video);
 
-    observer.observe(video);
     /**************************************************************************/
     /* 粒子背景特效 */
     /**************************************************************************/
     const canvas = document.getElementById("particle-canvas");
     const ctx = canvas.getContext("2d");
 
-    // 调整画布大小
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -46,27 +45,23 @@
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // 粒子参数
     let particles = [];
-    const particleCount = 120; // 粒子数量
-    const maxDistance = 240;  // 连接线的最大距离
+    const particleCount = 120;
+    const maxDistance = 240;
     let mouse = { x: null, y: null };
 
-    // 监听鼠标移动
     window.addEventListener("mousemove", (event) => {
         mouse.x = event.x;
         mouse.y = event.y;
     });
 
-    // 监听触摸移动
     window.addEventListener("touchmove", (event) => {
         if (event.touches.length > 0) {
-            mouse.x = event.touches[0].clientX; // 获取第一个触点的位置
+            mouse.x = event.touches[0].clientX;
             mouse.y = event.touches[0].clientY;
         }
     });
 
-    // 监听触摸开始，让特效跟随手指
     window.addEventListener("touchstart", (event) => {
         if (event.touches.length > 0) {
             mouse.x = event.touches[0].clientX;
@@ -74,13 +69,11 @@
         }
     });
 
-    // 监听触摸结束，隐藏鼠标特效
     window.addEventListener("touchend", () => {
         mouse.x = null;
         mouse.y = null;
     });
 
-    // 粒子类
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
@@ -119,7 +112,6 @@
         }
     }
 
-    // 初始化粒子
     function initParticles() {
         particles = [];
         for (let i = 0; i < particleCount; i++) {
@@ -127,7 +119,6 @@
         }
     }
 
-    // 绘制粒子之间的连接线
     function drawLines() {
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
@@ -147,15 +138,12 @@
         }
     }
 
-    // 鼠标跟随特效（兼容触摸）
     function drawMouseLines() {
         if (mouse.x == null || mouse.y == null) return;
-
         for (let i = 0; i < particles.length; i++) {
             let dx = particles[i].x - mouse.x;
             let dy = particles[i].y - mouse.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-
             if (distance < maxDistance * 1.5) {
                 let opacity = 1 - distance / (maxDistance * 1.5);
                 ctx.strokeStyle = `rgba(50, 205, 50, ${opacity})`;
@@ -168,8 +156,7 @@
         }
     }
 
-    // 动画循环
-    function animate() {
+    function animateParticles() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let particle of particles) {
             particle.update();
@@ -177,11 +164,11 @@
         }
         drawLines();
         drawMouseLines();
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateParticles);
     }
 
     initParticles();
-    animate();
+    animateParticles();
 
     /**************************************************************************/
     /* 代码行滚动打印效果 */
@@ -281,7 +268,6 @@
     let introScreen = document.getElementById("intro-screen");
     let enterButton = document.getElementById("enter-btn");
 
-    // 点击“进入网站”按钮，淡出 intro-screen
     enterButton.addEventListener("click", function () {
         introScreen.classList.add("fade-out");
         setTimeout(() => {
@@ -326,17 +312,21 @@
     }
 
     /**************************************************************************/
-    /* 3D 模型展示 (Three.js) */
+    /* 3D 模型展示 (Three.js) —— 不使用 import，直接用全局变量 */
     /**************************************************************************/
-
-    // 选择已有的 3D 画布容器
+    // 获取 3D 容器
     const canvasContainer = document.getElementById("3d-model-viewer");
 
-    // 创建 Three.js 场景
+    // 创建场景
     const scene = new THREE.Scene();
 
     // 创建相机
-    const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+        75,
+        canvasContainer.clientWidth / canvasContainer.clientHeight,
+        0.1,
+        1000
+    );
     camera.position.set(0, 2, 5);
 
     // 渲染器
@@ -345,8 +335,9 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     canvasContainer.appendChild(renderer.domElement);
 
-    // 轨道控制器
+    // 轨道控制器（全局 OrbitControls）
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
 
     // 添加环境光
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
@@ -357,13 +348,25 @@
     directionalLight.position.set(5, 10, 5);
     scene.add(directionalLight);
 
-    // 载入 Rhino 导出的 OBJ 模型
+    // 使用全局 OBJLoader
     const objLoader = new THREE.OBJLoader();
-    objLoader.load('assets/models/my_model.obj', (object) => {
-        scene.add(object);
-    });
+    objLoader.load(
+        'assets/models/my_model.obj',
+        (object) => {
+            object.scale.set(1, 1, 1);
+            object.position.set(0, 0, 0);
+            scene.add(object);
+            console.log("✅ 3D 模型加载完成");
+        },
+        (xhr) => {
+            console.log(`模型加载进度: ${(xhr.loaded / xhr.total * 100).toFixed(2)}%`);
+        },
+        (error) => {
+            console.error('❌ 3D 模型加载失败:', error);
+        }
+    );
 
-    // 监听窗口变化，调整 3D 画布尺寸
+    // 窗口变化时更新
     window.addEventListener('resize', () => {
         camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
         camera.updateProjectionMatrix();
@@ -379,11 +382,11 @@
     animate();
 
     /**************************************************************************/
-    /* PDF 显示  */
+    /* PDF 翻页显示 (turn.js) */
     /**************************************************************************/
     let pdfBook = document.getElementById("pdf-book");
     let totalPages = 24; // 总页数
-    let basePath = "assets/portfolio/pdf-page"; // 目录路径
+    let basePath = "assets/portfolio/pdf-page";
 
     // ✅ 自动生成 PDF 页
     for (let i = 1; i <= totalPages; i++) {
@@ -398,7 +401,6 @@
         pdfBook.appendChild(pageDiv);
     }
 
-    // ✅ 仅初始化一次 turn.js
     if ($("#pdf-book").length && !$("#pdf-book").data("initialized")) {
         $("#pdf-book").turn({
             width: 1000,
@@ -414,14 +416,12 @@
                 }
             }
         });
-
-        $("#pdf-book").data("initialized", true); // 避免重复初始化
+        $("#pdf-book").data("initialized", true);
     }
 
-    // ✅ 监听鼠标点击：左侧上一页，右侧下一页
     $("#pdf-book").click(function (event) {
-        let bookOffset = $(this).offset().left; // 获取元素左侧位置
-        let centerX = bookOffset + $(this).width() / 2; // 计算真正的中心点
+        let bookOffset = $(this).offset().left;
+        let centerX = bookOffset + $(this).width() / 2;
 
         if (event.pageX < centerX) {
             console.log("⬅️ 翻上一页");
@@ -432,22 +432,18 @@
         }
     });
 
-    // ✅ 监听键盘翻页
     $(document).keydown(function (e) {
-        if (e.keyCode == 37) $("#pdf-book").turn("previous"); // ← 左箭头
-        if (e.keyCode == 39) $("#pdf-book").turn("next"); // → 右箭头
+        if (e.keyCode == 37) $("#pdf-book").turn("previous");
+        if (e.keyCode == 39) $("#pdf-book").turn("next");
     });
 
-    // ✅ 自适应窗口大小
     function resizeBook() {
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
-
-        let bookWidth = windowWidth * 0.8;  // 90% 窗口宽度
-        let bookHeight = windowHeight * 1; // 90% 窗口高度
-
-        // 保持宽高比（以原始1000x800为参考）
+        let bookWidth = windowWidth * 0.8;
+        let bookHeight = windowHeight * 1;
         let aspectRatio = 1000 / 800;
+
         if (bookWidth / bookHeight > aspectRatio) {
             bookWidth = bookHeight * aspectRatio;
         } else {
@@ -458,7 +454,5 @@
     }
 
     window.addEventListener("resize", resizeBook);
-    resizeBook(); // 页面加载时先调整一次大小
-
-}); // DOMContentLoaded 结束
-
+    resizeBook();
+});
