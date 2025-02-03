@@ -11,8 +11,16 @@
     <!-- ✅ 再加载 Turn.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
+    <!--
+      ✅ 不用 import 的方式，直接通过 <script> 标签引入
+      注意：这些 examples/js/ 脚本会在全局 window 下注册 OrbitControls、OBJLoader
+    -->
+    <script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.152.2/examples/js/loaders/OBJLoader.js"></script>
 
 </head>
+
 <body class="hide-content">
     <!-- 一开始先隐藏正文，只显示 intro-screen -->
     <!-- 进入页面的动画界面 -->

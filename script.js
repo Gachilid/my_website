@@ -328,7 +328,55 @@
     /**************************************************************************/
     /* 3D 模型展示 (Three.js) */
     /**************************************************************************/
-    
+
+    // 选择已有的 3D 画布容器
+    const canvasContainer = document.getElementById("3d-model-viewer");
+
+    // 创建 Three.js 场景
+    const scene = new THREE.Scene();
+
+    // 创建相机
+    const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+    camera.position.set(0, 2, 5);
+
+    // 渲染器
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    canvasContainer.appendChild(renderer.domElement);
+
+    // 轨道控制器
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // 添加环境光
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    // 添加方向光
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 5);
+    scene.add(directionalLight);
+
+    // 载入 Rhino 导出的 OBJ 模型
+    const objLoader = new THREE.OBJLoader();
+    objLoader.load('assets/models/my_model.obj', (object) => {
+        scene.add(object);
+    });
+
+    // 监听窗口变化，调整 3D 画布尺寸
+    window.addEventListener('resize', () => {
+        camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+    });
+
+    // 动画循环
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animate();
 
     /**************************************************************************/
     /* PDF 显示  */
