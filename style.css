@@ -1,0 +1,231 @@
+﻿/* ========== 🌟 页面基础样式 ========== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 80px; /* 让正文内容下移，避免被导航栏挡住 */
+    text-align: center;
+    background-color: #f4f4f4;
+    overflow: hidden; /* 防止页面滚动，直到进入动画完成 */
+}
+    /* 🌟 默认隐藏正文内容 */
+    body.hide-content > *:not(#intro-screen) {
+        display: none;
+    }
+
+/* ========== Intro Screen ========== */
+#intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+    overflow: hidden;
+}
+
+    #intro-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+#background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -3;
+    pointer-events: none;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: -2;
+}
+
+/* 粒子画布 */
+#particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* 代码动画容器 */
+#code-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    color: #00ff06b8;
+    padding: 20px;
+    overflow: hidden;
+    white-space: pre-wrap;
+    text-align: left;
+    opacity: 0.9;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transform: translateY(0px);
+}
+
+    #code-animation::after {
+        content: '|';
+        animation: blink 1s infinite;
+    }
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+#intro-title,
+#enter-btn {
+    position: relative;
+    z-index: 10;
+}
+
+#enter-btn {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 20px;
+    background: white;
+    color: #2a5298;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+    #enter-btn:hover {
+        transform: scale(1.1);
+        background: #f8f8f8;
+    }
+
+/* ========== 导航栏动画 ========== */
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: -100px;
+    width: 100%;
+    z-index: 1000;
+    transition: top 0.8s ease-in-out;
+}
+
+body.show-header header {
+    top: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+    nav ul li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+/* ========== 页面内容区 ========== */
+section {
+    padding: 50px;
+    background-color: white;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+form input, form textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+form button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+    form button:hover {
+        background-color: #555;
+    }
+
+#projects {
+    text-align: center;
+    margin: 50px auto;
+    width: 80%;
+}
+
+#gallery img, #gallery video {
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto;
+    display: block;
+}
+
+/* ========== PDF turn.js ========== */
+#pdf-book {
+    width: 800px;
+    height: 600px;
+    margin: 50px auto;
+    position: relative;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.page {
+    width: 400px; /* 每页宽度 = 书本总宽度的一半 */
+    height: 600px;
+    background-color: white;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .page img {
+        width: 100%;
+        height: auto;
+        pointer-events: none;
+    }
+
+/* ========== 3D 容器 ========== */
+#3d-model-viewer {
+    width: 100%;
+    height: 400px;
+    background: #222; /* 背景色，避免加载前一片空白 */
+}
+
+footer {
+    margin-bottom: 40px;
+}

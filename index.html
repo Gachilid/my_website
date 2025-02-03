@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeremy's Website</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!--
+        由于 jQuery、Turn.js 还没有 ES Module 版本，因此
+        依然用普通 <script> 加载到全局。
+    -->
+    <!-- ✅ 先加载 jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- ✅ 再加载 Turn.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+</head>
+<body class="hide-content">
+    <!-- ========== Intro Screen ========== -->
+    <div id="intro-screen">
+        <video autoplay loop muted playsinline id="background-video">
+            <source src="assets/videos/video01.mp4" type="video/mp4">
+        </video>
+
+        <canvas id="particle-canvas"></canvas>
+        <div id="overlay"></div>
+
+        <!-- 代码动画容器 -->
+        <div id="code-animation"></div>
+
+        <h1 id="intro-title">欢迎来到 Jeremy 的网站</h1>
+        <button id="enter-btn">进入网站</button>
+    </div>
+
+    <!-- ========== 导航栏 ========== -->
+    <header>
+        <h1>欢迎来到我的网站</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">关于我</a></li>
+                <li><a href="#projects">作品展示</a></li>
+                <li><a href="#contact">联系我</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ========== 内容区 ========== -->
+    <section id="about">
+        <h2>关于我</h2>
+        <p>你好！我是 Jeremy，这里是我的个人网站。</p>
+    </section>
+
+    <section id="projects">
+        <h2>我的作品集</h2>
+
+        <!-- 图片 & 视频展示 -->
+        <div id="gallery">
+            <img src="assets/image/image01.png" alt="作品图片1">
+            <video src="assets/videos/video01.mp4" controls></video>
+        </div>
+
+        <!-- PDF 翻页 -->
+        <div id="pdf-book"></div>
+
+        <!-- 3D 模型展示 -->
+        <div id="3d-model-viewer"></div>
+
+        <!-- 代码展示 -->
+        <pre><code id="code-display">
+function hello() {
+    console.log("Hello, Jeremy!");
+}
+        </code></pre>
+    </section>
+
+    <section id="contact">
+        <h2>联系我</h2>
+        <form>
+            <input type="text" placeholder="你的姓名">
+            <input type="email" placeholder="你的邮箱">
+            <textarea placeholder="你的留言"></textarea>
+            <button type="submit">发送</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2025 Jeremy. 保留所有权利。</p>
+    </footer>
+
+    <!--
+      ✅ 最后通过 ES Modules 加载 script.js
+      这里面会 import { OrbitControls, OBJLoader } from 三方CDN
+    -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
