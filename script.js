@@ -1,9 +1,9 @@
 ﻿/********************************************************************/
 /* 通过 ES Modules 方式加载 Three.js/OrbitControls/OBJLoader         */
 /********************************************************************/
-import * as THREE from './libs/three/three.module.js';
-import { OrbitControls } from './libs/three/OrbitControls.js';
-import { OBJLoader } from './libs/three/OBJLoader.js';
+import * as THREE from './libs/three/build/three.module.js';
+import { OrbitControls } from './libs/three/examples/jsm/controls/OrbitControls.js';
+import { OBJLoader } from './libs/three/examples/jsm/loaders/OBJLoader.js';
 
 document.addEventListener("DOMContentLoaded", function () {
     /**************************************************************************/
