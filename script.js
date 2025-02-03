@@ -329,26 +329,24 @@
     );
     camera.position.set(0, 2, 5);
 
-    // 渲染器
+    // 创建渲染器
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     canvasContainer.appendChild(renderer.domElement);
 
-    // 轨道控制器（全局 OrbitControls）
+    // ⚠️ 在 animate() 之前声明 controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    // 添加环境光
+    // 添加一些灯光之类
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
-
-    // 添加方向光
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 5);
     scene.add(directionalLight);
 
-    // 使用全局 OBJLoader
+    // 加载模型
     const objLoader = new THREE.OBJLoader();
     objLoader.load(
         'assets/models/my_model.obj',
@@ -366,19 +364,23 @@
         }
     );
 
-    // 窗口变化时更新
+    // 监听窗口变化
     window.addEventListener('resize', () => {
         camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     });
 
-    // 动画循环
+    // -----------------------------------------------------
+    // 再定义 animate()，里面再用 controls.update()
+    // -----------------------------------------------------
     function animate() {
         requestAnimationFrame(animate);
-        controls.update();
+        controls.update();        // ✅ 现在 controls 已经在上面声明了
         renderer.render(scene, camera);
     }
+
+    // 最后再启动循环
     animate();
 
     /**************************************************************************/
