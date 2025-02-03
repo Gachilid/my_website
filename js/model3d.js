@@ -60,7 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 初始加载模型
-    loadModel('https://github.com/Gachilid/my_website/releases/download/models/my_model1.obj');
+    const modelUrl = 'https://cdn.jsdelivr.net/gh/Gachilid/my_website@main/assets/models/my_model1.obj';
+    loadModel(modelUrl);
 
     // 事件绑定
     document.getElementById("fullscreen-btn").addEventListener("click", () => {
