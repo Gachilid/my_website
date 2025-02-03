@@ -1,0 +1,50 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 20px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+}
+
+    header a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 20px;
+    }
+
+section {
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* PDF翻页容器 */
+#pdf-book {
+    width: 800px;
+    height: 600px;
+    margin: 50px auto;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.page {
+    width: 400px; /* 书的一半 */
+    height: 600px;
+    background: #fff;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .page img {
+        width: 100%;
+        height: auto;
+        pointer-events: none;
+    }

@@ -1,0 +1,88 @@
+﻿/* ========== 主页面基础样式 ========== */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* 导航栏 */
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+    header h1 {
+        margin: 0;
+        display: inline-block;
+        font-size: 24px;
+    }
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    float: right;
+}
+
+    nav ul li {
+        display: inline;
+        margin: 0 15px;
+    }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+/* 让正文下移，避免被导航栏挡住 */
+body {
+    padding-top: 80px;
+}
+
+section {
+    padding: 50px;
+    margin: 20px;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#gallery img, #gallery video {
+    width: 100%;
+    max-width: 600px;
+    margin: 10px auto;
+    display: block;
+}
+
+/* 表单 */
+form input, form textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+form button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+    form button:hover {
+        background-color: #555;
+    }
+
+footer {
+    margin: 40px auto;
+    text-align: center;
+    color: #555;
+}
