@@ -5,12 +5,17 @@
     <title>Jeremy's Website</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- ✅ 引入 Typed.js -->
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-</head>
-<body>
-    <!-- 进入页面的动画界面 -->
+    <!-- ✅ 先加载 jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+    <!-- ✅ 再加载 Turn.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
+
+
+</head>
+<body class="hide-content">
+    <!-- 一开始先隐藏正文，只显示 intro-screen -->
+    <!-- 进入页面的动画界面 -->
     <div id="intro-screen">
         <video autoplay loop muted playsinline id="background-video">
             <source src="assets/videos/video01.mp4" type="video/mp4">
@@ -19,12 +24,10 @@
         <!-- 粒子特效层 -->
         <canvas id="particle-canvas"></canvas>
 
-        <div id="code-animation"></div>
-
         <!-- 半透明黑色遮罩 -->
         <div id="overlay"></div>
 
-        <!-- 代码动画容器 -->
+        <!-- 代码动画容器 (只保留这一个) -->
         <div id="code-animation"></div>
 
         <!-- 前景内容：欢迎标题和进入按钮 -->
@@ -50,15 +53,30 @@
     </section>
 
     <section id="projects">
-        <h2>我的作品</h2>
-        <div class="project">
-            <h3>项目 1</h3>
-            <p>这是我的第一个作品。</p>
+        <h2>我的作品集</h2>
+
+        <!-- 🖼️ 图片 & 视频展示 -->
+        <div id="gallery">
+            <img src="assets/image/image01.png" alt="作品图片1">
+            <video src="assets/videos/video01.mp4" controls></video>
         </div>
-        <div class="project">
-            <h3>项目 2</h3>
-            <p>这是我的第二个作品。</p>
+
+        <!-- 📖 PDF 翻页效果 -->
+        <div id="pdf-book">
+
         </div>
+
+        <!-- 🎮 3D 模型展示 -->
+        <div id="3d-model-viewer">
+            <canvas id="three-canvas"></canvas>
+        </div>
+
+        <!-- 🖥️ 代码展示 -->
+        <pre><code id="code-display">
+function hello() {
+    console.log("Hello, Jeremy!");
+}
+        </code></pre>
     </section>
 
     <section id="contact">

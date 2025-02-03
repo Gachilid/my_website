@@ -1,16 +1,56 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    let video = document.getElementById("background-video");
+    let source = video.querySelector("source");
 
+    // ✅ 监听视频是否可以流畅播放
+    video.addEventListener("canplaythrough", function () {
+        console.log("🎥 视频可播放，开始播放！");
+        setTimeout(() => video.play(), 200); // ✅ 延迟播放，确保 `source` 加载完成
+    });
+
+    // ✅ 避免 `play()` 被 `load()` 终止
+    video.play().catch(error => {
+        console.warn("⚠️ 自动播放失败，尝试静音播放", error);
+        video.muted = true;
+        setTimeout(() => video.play(), 200);
+    });
+
+    // ✅ 仅替换 `src`，不 `load()`
+    let observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                console.log("📺 开始加载视频...");
+                if (!source.src) { // 确保只加载一次
+                    source.src = "./assets/videos/video01.mp4"; // ✅ 改成相对路径
+                    video.load();
+                }
+                observer.unobserve(video); // 只触发一次
+            }
+        });
+    });
+
+    observer.observe(video);
+
+    observer.observe(video);
+    /**************************************************************************/
+    /* 粒子背景特效 */
+    /**************************************************************************/
     const canvas = document.getElementById("particle-canvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // 调整画布大小
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
+    // 粒子参数
     let particles = [];
-    const particleCount = 120; // 颗粒数量
-    const maxDistance = 240; // 连接线的最大距离
+    const particleCount = 120; // 粒子数量
+    const maxDistance = 240;  // 连接线的最大距离
     let mouse = { x: null, y: null };
-
 
     // 监听鼠标移动
     window.addEventListener("mousemove", (event) => {
@@ -18,11 +58,26 @@
         mouse.y = event.y;
     });
 
-    // 窗口大小改变时，调整画布尺寸
-    window.addEventListener("resize", () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        initParticles();
+    // 监听触摸移动
+    window.addEventListener("touchmove", (event) => {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX; // 获取第一个触点的位置
+            mouse.y = event.touches[0].clientY;
+        }
+    });
+
+    // 监听触摸开始，让特效跟随手指
+    window.addEventListener("touchstart", (event) => {
+        if (event.touches.length > 0) {
+            mouse.x = event.touches[0].clientX;
+            mouse.y = event.touches[0].clientY;
+        }
+    });
+
+    // 监听触摸结束，隐藏鼠标特效
+    window.addEventListener("touchend", () => {
+        mouse.x = null;
+        mouse.y = null;
     });
 
     // 粒子类
@@ -31,19 +86,17 @@
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
             this.size = Math.random() * 2 + 1;
-            this.speedX = (Math.random() - 0.5) * 1;
-            this.speedY = (Math.random() - 0.5) * 1;
+            this.speedX = (Math.random() - 0.5);
+            this.speedY = (Math.random() - 0.5);
             this.hue = 0; // 初始白色
         }
 
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-
-            // 颜色渐变逻辑
-            this.hue += 0.2; // 颜色随时间变换
-
-            if (this.hue > 180) this.hue = 120; // 限制颜色范围 (120-180)
+            // 颜色渐变
+            this.hue += 0.2;
+            if (this.hue > 180) this.hue = 120;
 
             // 边界检测
             if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
@@ -53,21 +106,18 @@
         draw() {
             let color;
             if (this.hue < 60) {
-                color = `rgba(255, 255, 255, 1)`; // 白色
+                color = `rgba(255, 255, 255, 1)`;
             } else if (this.hue < 150) {
                 color = `hsl(${this.hue}, 100%, 50%)`; // 蓝绿色
             } else {
                 color = `hsl(120, 75%, 50%)`; // 酸橙绿
             }
-
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fillStyle = color;
             ctx.fill();
         }
     }
-
-
 
     // 初始化粒子
     function initParticles() {
@@ -77,15 +127,13 @@
         }
     }
 
-    // 绘制粒子连接线
+    // 绘制粒子之间的连接线
     function drawLines() {
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
                 let dx = particles[i].x - particles[j].x;
                 let dy = particles[i].y - particles[j].y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-
-                // 连接粒子之间的线
                 if (distance < maxDistance) {
                     let opacity = 0.85 - distance / maxDistance;
                     ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
@@ -99,8 +147,10 @@
         }
     }
 
-    // 鼠标跟随特效
+    // 鼠标跟随特效（兼容触摸）
     function drawMouseLines() {
+        if (mouse.x == null || mouse.y == null) return;
+
         for (let i = 0; i < particles.length; i++) {
             let dx = particles[i].x - mouse.x;
             let dy = particles[i].y - mouse.y;
@@ -108,7 +158,7 @@
 
             if (distance < maxDistance * 1.5) {
                 let opacity = 1 - distance / (maxDistance * 1.5);
-                ctx.strokeStyle = `rgba(50, 205, 50, ${opacity})`; // 酸橙绿 (LimeGreen)
+                ctx.strokeStyle = `rgba(50, 205, 50, ${opacity})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
@@ -121,28 +171,22 @@
     // 动画循环
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         for (let particle of particles) {
             particle.update();
             particle.draw();
         }
-
         drawLines();
         drawMouseLines();
-
         requestAnimationFrame(animate);
     }
 
     initParticles();
     animate();
 
-    // 获取进入页面元素
-    let introScreen = document.getElementById("intro-screen");
-    let enterButton = document.getElementById("enter-btn");
+    /**************************************************************************/
+    /* 代码行滚动打印效果 */
+    /**************************************************************************/
     let codeContainer = document.getElementById("code-animation");
-
-
-    // ✅ 代码内容（模拟终端输出）
     let codeLines = [
         "function welcome() {",
         "    console.log('欢迎来到 Jeremy 的网站!');",
@@ -162,23 +206,20 @@
     let index = 0;
     let charIndex = 0;
     let currentLine = "";
-    let lineHeight = 24; // ✅ 每行代码的高度
-    let maxLines = Math.floor(window.innerHeight / lineHeight); // ✅ 计算屏幕最大可容纳行数
-    let scrollOffset = 0; // ✅ 记录滚动的偏移量
-    let scrollSpeed = 0.3; // ✅ 控制滚动速度（可以调整数值来优化效果）
-    let isScrolling = false; // ✅ 代码是否正在滚动
-    let isTyping = false; // ✅ 是否正在打印
-    let isFilled = false; // ✅ 是否填满屏幕
+    let lineHeight = 24;
+    let maxLines = Math.floor(window.innerHeight / lineHeight);
+    let scrollOffset = 0;
+    let scrollSpeed = 0.3;
+    let isTyping = false;
+    let isFilled = false;
 
     function typeNextChar() {
         if (charIndex < codeLines[index].length) {
             currentLine += codeLines[index][charIndex];
             charIndex++;
-
             if (codeContainer.lastChild) {
                 codeContainer.lastChild.textContent = "> " + currentLine;
             }
-
             setTimeout(typeNextChar, 10);
         } else {
             index++;
@@ -190,40 +231,33 @@
 
     function addCodeLine() {
         if (index >= codeLines.length) {
-            index = 0; // ✅ 代码循环
+            index = 0; // 循环
         }
-
         if (!isTyping) {
             isTyping = true;
             currentLine = "";
-
             let newLine = document.createElement("div");
             newLine.textContent = "> ";
-            newLine.style.position = "relative";
-            newLine.style.height = `${lineHeight}px`; // ✅ 让行高匹配，保证滚动平滑
+            newLine.style.height = `${lineHeight}px`;
             codeContainer.appendChild(newLine);
-
             typeNextChar();
 
-            // ✅ 当代码超出最大行数时，启动平滑滚动
             if (codeContainer.children.length > maxLines) {
-                isFilled = true; // ✅ 标记代码已经填满屏幕
+                isFilled = true;
             }
         }
     }
 
-    let initialOffset = -24; // ✅ 让代码流起始位置向上提高两行（2 * 24px）
+    let initialOffset = -24;
 
     function startScrolling() {
         function scrollStep() {
             if (isFilled) {
                 scrollOffset += scrollSpeed;
                 codeContainer.style.transform = `translateY(${initialOffset - scrollOffset}px)`;
-
                 if (scrollOffset >= lineHeight) {
                     scrollOffset = 0;
                     codeContainer.style.transform = `translateY(${initialOffset}px)`;
-
                     if (codeContainer.children.length > 0) {
                         codeContainer.removeChild(codeContainer.children[0]);
                     }
@@ -231,63 +265,152 @@
             }
             requestAnimationFrame(scrollStep);
         }
-
         requestAnimationFrame(scrollStep);
     }
 
-    addCodeLine(); // ✅ 启动代码流
-    startScrolling(); // ✅ 确保滚动始终执行
+    addCodeLine();
+    startScrolling();
 
-    // 📌 监听“进入网站”按钮的点击事件
+    window.addEventListener("resize", function () {
+        maxLines = Math.floor(window.innerHeight / lineHeight);
+    });
+
+    /**************************************************************************/
+    /* Intro Screen -> 进入网站 */
+    /**************************************************************************/
+    let introScreen = document.getElementById("intro-screen");
+    let enterButton = document.getElementById("enter-btn");
+
+    // 点击“进入网站”按钮，淡出 intro-screen
     enterButton.addEventListener("click", function () {
-        // ✅ 让整个 intro-screen 淡出
         introScreen.classList.add("fade-out");
-
         setTimeout(() => {
-            // ✅ 完全隐藏 intro-screen，显示主页面内容
             introScreen.style.display = "none";
+            // 显示正文
             document.body.classList.remove("hide-content");
             document.body.style.overflow = "auto";
+            // 显示导航栏
+            document.body.classList.add("show-header");
         }, 1000);
     });
 
-    // 📌 窗口大小变化时重新计算 maxLines
-    window.addEventListener("resize", function () {
-        maxLines = Math.floor(window.innerHeight / 20);
-    });
-
-    // ✅ 确保页面加载时隐藏主内容
-    document.body.classList.add("hide-content");
-
-    // 📌 监听滚动事件，确保滚动到最上方时导航栏始终可见
+    /**************************************************************************/
+    /* 滚动时自动隐藏或显示导航栏（可选） */
+    /**************************************************************************/
     window.addEventListener("scroll", function () {
         let header = document.querySelector("header");
-
-        // 🚀 滚动超过 50px，隐藏导航栏
         if (window.scrollY > 50) {
-            header.style.top = "-100px"; // 向上隐藏
+            header.style.top = "-100px";
         } else {
-            header.style.top = "0"; // 露出导航栏
+            header.style.top = "0";
         }
     });
 
-    // 📌 监听表单提交事件，防止页面刷新，并显示提交成功信息
+    /**************************************************************************/
+    /* 表单提交处理 */
+    /**************************************************************************/
     let form = document.querySelector("form");
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            let confirmationMessage = document.createElement("p");
+            confirmationMessage.textContent = "✅ 你的留言已提交！我会尽快回复。";
+            confirmationMessage.style.color = "green";
+            confirmationMessage.style.fontWeight = "bold";
+            form.appendChild(confirmationMessage);
 
-        // ✅ 创建并显示提交成功信息
-        let confirmationMessage = document.createElement("p");
-        confirmationMessage.textContent = "✅ 你的留言已提交！我会尽快回复。";
-        confirmationMessage.style.color = "green";
-        confirmationMessage.style.fontWeight = "bold";
+            setTimeout(() => {
+                confirmationMessage.remove();
+            }, 5000);
+        });
+    }
 
-        // ✅ 添加到表单下方
-        form.appendChild(confirmationMessage);
+    /**************************************************************************/
+    /* 3D 模型展示 (Three.js) */
+    /**************************************************************************/
+    
 
-        // ✅ 5 秒后自动移除提示信息
-        setTimeout(() => {
-            confirmationMessage.remove();
-        }, 5000);
+    /**************************************************************************/
+    /* PDF 显示  */
+    /**************************************************************************/
+    let pdfBook = document.getElementById("pdf-book");
+    let totalPages = 24; // 总页数
+    let basePath = "assets/portfolio/pdf-page"; // 目录路径
+
+    // ✅ 自动生成 PDF 页
+    for (let i = 1; i <= totalPages; i++) {
+        let pageDiv = document.createElement("div");
+        pageDiv.classList.add("page");
+
+        let img = document.createElement("img");
+        img.src = `${basePath}${i}.jpg`;
+        img.alt = `Page ${i}`;
+
+        pageDiv.appendChild(img);
+        pdfBook.appendChild(pageDiv);
+    }
+
+    // ✅ 仅初始化一次 turn.js
+    if ($("#pdf-book").length && !$("#pdf-book").data("initialized")) {
+        $("#pdf-book").turn({
+            width: 1000,
+            height: 800,
+            autoCenter: true,
+            display: "double",
+            acceleration: true,
+            elevation: 50,
+            gradients: true,
+            when: {
+                turned: function (event, page) {
+                    console.log("📖 翻到第 " + page + " 页");
+                }
+            }
+        });
+
+        $("#pdf-book").data("initialized", true); // 避免重复初始化
+    }
+
+    // ✅ 监听鼠标点击：左侧上一页，右侧下一页
+    $("#pdf-book").click(function (event) {
+        let bookOffset = $(this).offset().left; // 获取元素左侧位置
+        let centerX = bookOffset + $(this).width() / 2; // 计算真正的中心点
+
+        if (event.pageX < centerX) {
+            console.log("⬅️ 翻上一页");
+            $("#pdf-book").turn("previous");
+        } else {
+            console.log("➡️ 翻下一页");
+            $("#pdf-book").turn("next");
+        }
     });
-});
+
+    // ✅ 监听键盘翻页
+    $(document).keydown(function (e) {
+        if (e.keyCode == 37) $("#pdf-book").turn("previous"); // ← 左箭头
+        if (e.keyCode == 39) $("#pdf-book").turn("next"); // → 右箭头
+    });
+
+    // ✅ 自适应窗口大小
+    function resizeBook() {
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
+
+        let bookWidth = windowWidth * 0.8;  // 90% 窗口宽度
+        let bookHeight = windowHeight * 1; // 90% 窗口高度
+
+        // 保持宽高比（以原始1000x800为参考）
+        let aspectRatio = 1000 / 800;
+        if (bookWidth / bookHeight > aspectRatio) {
+            bookWidth = bookHeight * aspectRatio;
+        } else {
+            bookHeight = bookWidth / aspectRatio;
+        }
+
+        $("#pdf-book").turn("size", bookWidth, bookHeight);
+    }
+
+    window.addEventListener("resize", resizeBook);
+    resizeBook(); // 页面加载时先调整一次大小
+
+}); // DOMContentLoaded 结束
+
